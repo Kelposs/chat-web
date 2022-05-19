@@ -1,6 +1,6 @@
 # chat-web
 chat aplication(HTML,Css,Js,Node.js)
--group chat
+-group chat/n
 -private group chat
 -private chat
 -reactions
