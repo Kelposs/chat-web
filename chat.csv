@@ -1,0 +1,25 @@
+Id, message, roomId, avatarId, classNumber, hour, min
+none,2021年7月10日　土曜日,general,none,none,none,none
+Itadori,サンキュー・ソー・マッチ・ベスト・フレンド,general,./3.png,1,11,21
+Doraemon,道を選ぶということは必ずしも歩きやすい安全な道を選ぶってことじゃないんだぞ,general,./2.png,2,12,23
+Senku,そそるぜ、これは！,general,./4.png,3,13,21
+Zoro,強くなりたい！,general,./6.png,4,14,21
+none,2021年7月14日　水曜日,general,none,none,none,none
+Pain,神羅天征!!!,room1,./10.png,1,15,21
+none,2021年7月14日　水曜日,room1,none,none,none,none
+Edward,俺の人生半分やるからお前の人生半分くれっ！！,test,./1.png,1,16,21
+none,2021年7月14日　水曜日,test,none,none,none,none
+Naruto,火影になるってばよ!,general,./5.png,5,17,21
+none,2021年7月16日　金曜日,general,none,none,none,none
+Goku,クリリンのことかーーーー!!!!!,general,./7.png,6,21,51
+a,"<hashed onclick=""changeRoom(room1)"">#room1</hashed>",general,./8.png,7,21,53
+a,"<hashed onclick=""changeToPrivateRoom(test)"">#test</hashed>",general,./11.png,8,21,53
+Dio,ザワールド,general,./9.png,9,22,21
+none,2021年7月17日　土曜日,a_a,none,none,none,none
+All Might,更に向こうへ Plus Ultra!,general,./12.png,10,17,22
+none,2021年7月17日　土曜日,general,none,none,none,none
+Asta,諦めないのがオレの魔法だ！！,general,./1.png,11,17,22
+Gold.D.Roger,富、名声、力,general,./3.png,12,19,21
+Kacper,"<hashed onclick=""changeRoom(general)"">#general</hashed>",general,./2.png,13,21,51
+none,2021年7月18日　日曜日,general,none,none,none,none
+Kacper,"<hashed onclick=""changeRoom(room1)"">#room1</hashed>",general,./2.png,14,22,51

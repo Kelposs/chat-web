@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Like a Slack</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+      }
+      #container {
+        height: 100%;
+        display: flex;
+        overflow: auto;
+      }
+      #menu {
+        width: 16%;
+        height: 100%;
+        float: left;
+        background: #3f0e40;
+        overflow: auto;
+      }
+      #channel-panel {
+        margin: 0 auto;
+        object-fit: contain;
+        overflow: auto;
+      }
+      #channels {
+        font-size: 20px;
+        max-height: 242.2px;
+        list-style-type: none;
+        overflow: auto;
+        margin: 0;
+        padding: 0;
+        color: white;
+        object-fit: contain;
+      }
+      #channels > li {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        overflow-wrap: break-word;
+      }
+      #channels > li:hover {
+        background-color: #320b33;
+        transition: background-color 0.5s;
+      }
+      #chat-panel {
+        margin-bottom: 10px;
+        width: 84%;
+        overflow: auto;
+      }
+      #typing-box {
+        position: absolute;
+
+        bottom: 30px;
+        width: 84%;
+      }
+      #form {
+        background-color: white;
+        position: absolute;
+        bottom: 0;
+        width: 84%;
+        border: 30px;
+        padding: 0.12rem;
+        display: flex;
+        height: 2rem;
+        box-sizing: border-box;
+        border-color: aquamarine;
+      }
+      #input {
+        width: 95%;
+      }
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        margin-top: 55px;
+        object-fit: contain;
+      }
+
+      #messages > .toHover li {
+        overflow-wrap: break-word;
+      }
+      #messages > .toHover li:nth-child(even) {
+        position: relative;
+        bottom: 46px;
+        margin-left: 42px;
+        margin-bottom: -30px;
+      }
+
+      #messages > .pictureToHover li:nth-child(even) {
+        position: relative;
+        bottom: 46px;
+        margin-left: 42px;
+        margin-bottom: -30px;
+      }
+
+      #messages > .toHover li:nth-child(odd) {
+        padding-top: 5px;
+        height: auto;
+      }
+
+      #messages > .pictureToHover li:nth-child(odd) {
+        padding-top: 5px;
+        height: auto;
+      }
+
+      #messages > .toHover:hover {
+        /* height: 60px;*/
+        /*height: 57.25px;*/
+        background-color: rgba(238, 238, 238, 0.89);
+        transition: background-color 0.5s;
+        z-index: 0;
+      }
+      #messages > .pictureToHover {
+        position: relative;
+      }
+
+      #messages > .pictureToHover:hover {
+        max-height: 400px;
+        padding-bottom: 0.1px;
+        /*height: 57.25px;*/
+        background-color: rgba(238, 238, 238, 0.89);
+        transition: background-color 0.5s;
+        z-index: 0;
+      }
+
+      #messages > .toHover li strong {
+        font-size: 15px;
+        color: #575ed8;
+      }
+
+      #messages > .pictureToHover li strong {
+        font-size: 15px;
+        color: #575ed8;
+      }
+
+      #messages > .toHover li hashed {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        font-size: 15px;
+        background-image: linear-gradient(
+          to left,
+          violet,
+          indigo,
+          blue,
+          green,
+          yellow,
+          orange,
+          red
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      #messages > li sysmessage {
+        color: red;
+        font-size: 110%;
+        margin-left: 15px;
+      }
+      #message-prompt {
+        padding-bottom: 30px;
+      }
+      #show-channel {
+        height: 50px;
+        width: 100%;
+        box-shadow: 0 0 10px #dddddd;
+        background-color: #fafafb;
+        position: fixed;
+        top: 0;
+        z-index: 5;
+      }
+      #users {
+        font-size: 20px;
+        list-style-type: none;
+        height: 359.8px;
+        overflow: auto;
+        margin: 0;
+        padding: 0;
+        object-fit: contain;
+      }
+      #users img {
+        height: 35px;
+      }
+      #users > .user-hover {
+        padding: 5px;
+      }
+      #users > .user-hover li:nth-child(even) {
+        position: relative;
+        bottom: 37px;
+        font-size: 24px;
+        color: white;
+        margin-left: 42px;
+        margin-bottom: -30px;
+      }
+      #users > .user-hover {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        overflow-wrap: break-word;
+      }
+      #users > .user-hover:hover {
+        padding: 5px;
+        background-color: #320b33;
+        transition: background-color 0.5s;
+      }
+      #justAdd {
+        font-size: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        color: white;
+        object-fit: contain;
+      }
+      #justAdd > li {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        overflow-wrap: break-word;
+      }
+      #justAdd > li:hover {
+        background-color: #320b33;
+        transition: background-color 0.5s;
+      }
+      .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+      }
+
+      .separator::before,
+      .separator::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #000;
+      }
+      .asd {
+        background-color: white;
+        border-radius: 25px;
+        display: none;
+        position: absolute;
+        right: 10px;
+        bottom: 3px;
+        z-index: 7;
+      }
+      .asd img {
+        height: 24px;
+        margin-right: 5px;
+        margin-top: 3px;
+      }
+      .asd img:first-child {
+        margin-left: 5px;
+      }
+      #messages > .toHover:hover .asd {
+        display: block;
+      }
+      .toHover {
+        padding: 5px 0 5px 0;
+        position: relative;
+      }
+      .reaction-box {
+        position: absolute;
+        margin-top: 41px;
+        margin-left: 43px;
+      }
+      #user-hints {
+        max-height: 200px;
+        width: 300px;
+        background-color: #a7aae6;
+        overflow-wrap: break-word;
+        overflow: auto;
+        position: sticky;
+        bottom: 40px;
+        left: 10px;
+        border-radius: 10px;
+      }
+      #user-hints-2 {
+        list-style-type: none;
+        object-fit: contain;
+        overflow: auto;
+        margin: 0px;
+        padding: 0;
+      }
+      #user-hints-2 > li {
+        margin: 10px;
+        padding: 0;
+      }
+      channels p {
+        text-align: center;
+        color: white;
+        font-size: 25px;
+      }
+      #custom-file-input {
+        margin-left: 5px;
+        width: 149px;
+        color: transparent;
+      }
+      #custom-file-input::-webkit-file-upload-button {
+        visibility: hidden;
+      }
+      #custom-file-input::before {
+        content: "Select some files";
+        color: black;
+        display: inline-block;
+        background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+        border: 1px solid #999;
+        border-radius: 3px;
+        padding: 5px 8px;
+        outline: none;
+        white-space: nowrap;
+        user-select: none;
+        -webkit-user-select: none;
+        cursor: pointer;
+        text-shadow: 1px 1px #fff;
+        font-weight: 700;
+        font-size: 10pt;
+      }
+      #custom-file-input:hover::before {
+        border-color: black;
+      }
+      #custom-file-input:active {
+        outline: 0;
+      }
+      #custom-file-input:active::before {
+        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+      }
+      #allUsersInGroup {
+        position: absolute;
+        padding: 0.01em 16px;
+        border: 1px solid;
+        border-radius: 16px;
+        border-color: #999;
+        top: 20px;
+        right: 40px;
+        font-size: 22px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="menu">
+        <div id="channel-panel">
+          <channels><p>All Channels</p></channels>
+          <ul id="channels"></ul>
+          <ul id="justAdd">
+            <li
+              style="padding: 7px; text-align: center"
+              onclick="addChannel();"
+            >
+              +　 Add channels
+            </li>
+          </ul>
+        </div>
+        <channels><p>Users</p></channels>
+        <ul id="users"></ul>
+      </div>
+      <div id="chat-panel">
+        <div id="message-prompt">
+          <div id="show-channel"></div>
+          <div id="allUsersInGroup"></div>
+          <ul id="messages"></ul>
+        </div>
+        <div id="typing-box"></div>
+        <div id="user-hints"><ul id="user-hints-2"></ul></div>
+        <form id="form" action="">
+          <input id="input" autocomplete="off" /><button>
+            <img
+              style="height: 17px; width: 17px"
+              src="./send.png"
+              alt="Send"
+            />
+          </button>
+          <input type="file" id="custom-file-input" />
+        </form>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      var socket = io();
+
+      var roomID = "";
+      var nicks = "";
+      var channel_password = new Map();
+      var wasHashCliked = false;
+      var wasMailClicked = false;
+
+      var theImages = [
+        "./1.png",
+        "./2.png",
+        "./3.png",
+        "./4.png",
+        "./5.png",
+        "./6.png",
+        "./7.png",
+        "./8.png",
+        "./9.png",
+        "./10.png",
+        "./11.png",
+        "./12.png",
+      ];
+
+      var message_react = new Map();
+      var react_count = new Map();
+      var longWord = "";
+
+      var messages = document.getElementById("messages");
+      var form = document.getElementById("form");
+      var input = document.getElementById("input");
+      var users = document.getElementById("users");
+      var chat = document.getElementById("chat-panel");
+      var showChannel = document.getElementById("show-channel");
+      var channels = document.getElementById("channels");
+      var typingBox = document.getElementById("typing-box");
+      var reactionBox = document.getElementsByClassName("reaction-box");
+      var userHints = document.getElementById("user-hints-2");
+      var file = document.getElementById("custom-file-input");
+      var list = document.getElementById("channels").getElementsByTagName("li");
+      var usersList = users.getElementsByTagName("li");
+      var allOfUs = document.getElementById("allUsersInGroup");
+
+      file.addEventListener("change", sendImage, false);
+
+      function sendImage(event) {
+        let file = event.target.files[0];
+        var src = URL.createObjectURL(file);
+
+        var a = new Date();
+        var localTime = a.getTime();
+        var localOffSet = a.getTimezoneOffset() * 60 * 1000;
+        var utcTime = localTime + localOffSet;
+        var offset = 9.0;
+        var japan = utcTime + 3600000 * offset;
+        var d = new Date(japan);
+        var weekDays = [
+          "日曜日",
+          "月曜日",
+          "火曜日",
+          "水曜日",
+          "木曜日",
+          "金曜日",
+          "土曜日",
+        ];
+
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        var dayOfWeek = weekDays[d.getDay()];
+        var hour = d.getHours();
+        var minute = d.getMinutes();
+
+        var time = [year, month, day, dayOfWeek, hour, minute];
+
+        socket.emit("myImage", src, time);
+
+        let reader = new FileReader();
+
+        reader.onload = (event) => {
+          socket.emit("image", reader.result, time);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      socket.on("printImg", (data) => {
+        messages.innerHTML +=
+          '<div class="pictureToHover"><li><img style="max-height:40px;" src=' +
+          '"' +
+          data.avatar +
+          '"></li>' +
+          "<li><strong>" +
+          data.nickname +
+          '</strong>&nbsp&nbsp&nbsp<span style="font-size:12px">' +
+          data.hour +
+          ":" +
+          data.min +
+          '</span><br><img style="max-height:300px;max-width:450px" src="' +
+          data.img +
+          '"></li></div>';
+
+        chat.scrollTo(0, messages.offsetHeight);
+      });
+
+      socket.on("image", (data) => {
+        if (roomID.id === data.check || roomID === data.check) {
+          let canvas = document.createElement("canvas");
+          let ctx = canvas.getContext("2d");
+          let img = new Image();
+          img.src = data.img;
+          img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            ctx.drawImage(img, img.width, img.height);
+            img.src = canvas.toDataURL();
+          };
+
+          messages.innerHTML +=
+            '<div class="pictureToHover"><li><img style="max-height:40px;" src=' +
+            '"' +
+            data.avatar +
+            '"></li>' +
+            "<li><strong>" +
+            data.nickname +
+            '</strong>&nbsp&nbsp&nbsp<span style="font-size:12px">' +
+            data.hour +
+            ":" +
+            data.min +
+            '</span><br><img style="max-height:300px;max-width:450px" src="' +
+            img.src +
+            '"></li></div>';
+        }
+        //chat.scrollTo(0, messages.offsetHeight);
+        chat.scrollTo(0, messages.scrollHeight);
+      });
+
+      function sendReaction(reaction) {
+        var wasClicked;
+        longWord += "#" + reaction.className + reaction.src;
+        var wordlength = "#" + reaction.className + reaction.src;
+
+        var howManyreactPerMessage =
+          longWord.split("#" + reaction.className + reaction.src).length - 1; //w kazdej wiadomosci, kazdy stamp ile razy byl klikany
+
+        if (howManyreactPerMessage % 2 == 0) {
+          wasClicked = true;
+
+          longWord = longWord.substring(0, longWord.length - wordlength.length);
+
+          longWord = longWord
+            .split("#" + reaction.className + reaction.src)
+            .join("");
+        } else {
+          wasClicked = false;
+        }
+
+        socket.emit(
+          "send reaction",
+          reaction.className,
+          reaction.src,
+          wasClicked
+        );
+      }
+
+      socket.on("print clicked reaction", (counts, className, source) => {
+        var a = reactionBox[className - 1].outerHTML;
+        var word =
+          '<img src="' + source + '" style="height:14px;margin-top:3px">';
+        var counter = a.substring(
+          a.search(
+            '<img src="' + source + '" style="height:14px;margin-top:3px">'
+          ) + word.length,
+          a.search(
+            '<img src="' + source + '" style="height:14px;margin-top:3px">'
+          ) +
+            word.length +
+            10
+        );
+
+        counter = counter.replace(/\D/g, "");
+
+        if (!a.includes('<img src="' + source + '"')) {
+          reactionBox[className - 1].innerHTML +=
+            "<img src='" +
+            source +
+            "' style='height:14px;margin-top:3px'>" +
+            counts;
+        } else {
+          if (counts < counter) {
+            if (parseInt(counter - 1) == 0) {
+              var final = a.replace(
+                '<img src="' +
+                  source +
+                  '" style="height:14px;margin-top:3px">' +
+                  counter,
+                ""
+              );
+            } else {
+              var final = a.replace(
+                '<img src="' +
+                  source +
+                  '" style="height:14px;margin-top:3px">' +
+                  counter,
+                '<img src="' +
+                  source +
+                  '" style="height:14px;margin-top:3px">' +
+                  parseInt(counter - 1)
+              );
+            }
+          } else if (counts == counter) {
+            counter = Number(counter);
+
+            var final = a.replace(
+              '<img src="' +
+                source +
+                '" style="height:14px;margin-top:3px">' +
+                counter,
+              '<img src="' +
+                source +
+                '" style="height:14px;margin-top:3px">' +
+                (counter + 1)
+            );
+          } else {
+            var final = a.replace(
+              '<img src="' +
+                source +
+                '" style="height:14px;margin-top:3px">' +
+                (counts - 1),
+              '<img src="' +
+                source +
+                '" style="height:14px;margin-top:3px">' +
+                counts
+            );
+          }
+
+          var lastStep = final.substring(26, final.length - 6);
+          reactionBox[className - 1].innerHTML = lastStep;
+        }
+        socket.emit(
+          "save_reaction",
+          reactionBox[className - 1].outerHTML,
+          className
+        );
+      });
+
+      function nickIsSet(nickname) {
+        return nickname && nickname !== "";
+      }
+
+      function setNicknameAvatar() {
+        input.setAttribute("disabled", "disabled");
+        var nickName;
+        while (!nickIsSet(nickName)) {
+          nickName = prompt("Please enter your name");
+          nickName = nickName.trim();
+        }
+        nicks = nickName;
+        var p = theImages.length;
+        var whichImage = Math.round(Math.random() * (p - 1));
+        socket.emit("set nickname avatar", nickName, theImages[whichImage]);
+      }
+
+      setNicknameAvatar();
+
+      socket.on("newcomer joined", (nicknames_avatars_array) => {
+        users.innerHTML = "";
+
+        for (var i = 0; i < nicknames_avatars_array.length; i++) {
+          var word = nicknames_avatars_array[i];
+          var mark = word.search("/?./");
+          var nn = word.substring(0, mark - 1);
+          var av = word.substring(mark, word.length);
+
+          users.innerHTML +=
+            '<div class="user-hover"><li><img style="max-height:35px;"src="' +
+            av +
+            '"></li>' +
+            '<li onclick="profileAsChannel(this)">' +
+            nn +
+            "</li></div>";
+        }
+      });
+
+      function profileAsChannel(profile) {
+        socket.emit("profile-channel", profile.innerHTML);
+      }
+      ////////////////////////////////////////////////////////////////////////jesli bedzie zawieral to przjdz do okna(nowy div dla dm)
+      socket.on("send DM", (dialog, myName) => {
+        if (dialog.search(myName + "_") === -1) {
+          if (dialog.search("_" + myName) !== -1) {
+            roomID = dialog;
+            input.removeAttribute("disabled");
+            showChannel.innerHTML =
+              "<p><span style='font-size:24px; margin-left:30px'>@ " +
+              dialog.replace("_" + myName, "") +
+              "</span></p>";
+
+            $("#messages").empty();
+            allOfUs.innerHTML = "";
+            socket.emit("set roomname", dialog);
+          }
+        } else {
+          roomID = dialog;
+          input.removeAttribute("disabled");
+          showChannel.innerHTML =
+            "<p><span style='font-size:24px; margin-left:30px'>@ " +
+            dialog.replace(myName + "_", "") +
+            "</span></p>";
+
+          $("#messages").empty();
+          allOfUs.innerHTML = "";
+          socket.emit("set roomname", dialog);
+        }
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        var a = new Date();
+        var localTime = a.getTime();
+        var localOffSet = a.getTimezoneOffset() * 60 * 1000;
+        var utcTime = localTime + localOffSet;
+        var offset = 9.0;
+        var japan = utcTime + 3600000 * offset;
+        var d = new Date(japan);
+        var weekDays = [
+          "日曜日",
+          "月曜日",
+          "火曜日",
+          "水曜日",
+          "木曜日",
+          "金曜日",
+          "土曜日",
+        ];
+
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        var dayOfWeek = weekDays[d.getDay()];
+        var hour = d.getHours();
+        var minute = d.getMinutes();
+
+        var time = [year, month, day, dayOfWeek, hour, minute];
+        socket.emit("chat message", input.value, time);
+        socket.emit("save", input.value, time[4], time[5]); //saving name
+        input.value = "";
+      });
+
+      socket.on("chat message", (data) => {
+        if (roomID.id === data.check || roomID === data.check) {
+          if (data.special !== -1) {
+            if (data.privacy === "Y") {
+              data.msg = data.msg.replace(
+                data.channel,
+                '<hashed onclick="changeToPrivateRoom(' +
+                  data.where +
+                  ')">' +
+                  data.channel +
+                  "</hashed>"
+              );
+            } else {
+              data.msg = data.msg.replace(
+                data.channel,
+                '<hashed onclick="changeRoom(' +
+                  data.where +
+                  ')">' +
+                  data.channel +
+                  "</hashed>"
+              );
+            }
+          }
+
+          messages.innerHTML +=
+            '<div class="toHover"><div class="reaction-box"></div><div></div><li><img style="max-height:40px;" src=' +
+            '"' +
+            data.avatar +
+            '"></li>' +
+            "<li><strong>" +
+            data.nickname +
+            '</strong>&nbsp&nbsp&nbsp<span style="font-size:12px">' +
+            data.hour +
+            ":" +
+            data.min +
+            "</span><br>" +
+            data.msg +
+            '</li><div class="asd"><img style="max-height:24px;" class="' +
+            data.class +
+            '" src="./happy.svg" onclick="sendReaction(this)"/><img style="max-height:24px;" class="' +
+            data.class +
+            '" src="./in-love.svg" onclick="sendReaction(this)"/><img style="max-height:24px;" class="' +
+            data.class +
+            '" src="./sad.svg" onclick="sendReaction(this)"/><img style="max-height:24px;" class="' +
+            data.class +
+            '" src="./sick.svg" onclick="sendReaction(this)"/></div><div></div></div>';
+
+          chat.scrollTo(0, messages.offsetHeight);
+        }
+      });
+
+      socket.on("reject message", (msg) => {
+        //同じメッセージを送る場合
+        messages.innerHTML +=
+          "<li><sysmessage>" +
+          "同じメッセージが送られた ➞</sysmessage>　" +
+          msg +
+          "</li><div>　</div>";
+        chat.scrollTo(0, messages.offsetHeight);
+      });
+
+      socket.on("print date", (dateString) => {
+        var splitData = dateString.split("年");
+        var printYear = splitData[0];
+        var withoutYear = splitData[1];
+        var splitData_2 = withoutYear.split("月");
+        if (splitData_2[2] === "曜日") {
+          splitData_2[1] += "月曜日";
+        }
+        var printMonth = splitData_2[0];
+        var withoutYearMonth = splitData_2[1];
+        var splitData_3 = withoutYearMonth.split("日");
+        var printDay = splitData_3[0];
+        if (splitData_3[1] === "") {
+          splitData_3[1] += "日曜";
+        }
+        var printWeekDay = splitData_3[1];
+
+        if (printYear.length > 0) {
+          printYear += "年";
+        }
+        if (printMonth.length != 0) {
+          printMonth += "月";
+        }
+        if (printDay.length != 0) {
+          printDay += "日　";
+          printWeekDay += "日";
+        }
+
+        var dateToSave = printYear + printMonth + printDay + printWeekDay;
+
+        socket.emit("save-date", dateToSave); ////////////////asdsadsadsadsadsadsa/////////asdsadsadsadasdsad
+
+        messages.innerHTML +=
+          '<div class="separator">' +
+          printYear +
+          printMonth +
+          printDay +
+          printWeekDay +
+          "</div><div></div>";
+      });
+
+      function changeRoom(room) {
+        input.removeAttribute("disabled");
+        if (roomID == room) {
+          return;
+        }
+
+        roomID = room;
+        showChannel.innerHTML =
+          "<p><span style='font-size:24px; margin-left:30px'># " +
+          room.id +
+          "</span></p>";
+
+        $("#messages").empty();
+        socket.emit("set roomname", room.id);
+      }
+      //////////////////////////////////////////////////////////////
+      function changeToPrivateRoom(room) {
+        input.removeAttribute("disabled");
+        if (roomID == room) {
+          return;
+        }
+        var inputPassword;
+        inputPassword = prompt("To see this channel, write a password");
+
+        if (inputPassword != channel_password.get(room.id)) {
+          return;
+        } else {
+          roomID = room;
+          showChannel.innerHTML =
+            "<p><span style='font-size:24px; margin-left:30px'>\uD83D\uDD12 " +
+            room.id +
+            "</span></p>";
+
+          $("#messages").empty();
+
+          socket.emit("set roomname", room.id);
+        }
+      }
+      ///asd/sadsadasdsad/sad/as/dsa/d/sad/as/da/sd/d/
+      function addChannel() {
+        var channel;
+        var isPrivate;
+        var password;
+
+        while (!nickIsSet(channel)) {
+          channel = prompt("Set your new channel ID");
+          channel = channel.trim();
+        }
+
+        do {
+          isPrivate = prompt(
+            "Make it private ?\r\nIf yes, write 'Y'\r\nIf no, write 'N'"
+          );
+        } while (isPrivate != "Y" && isPrivate != "N");
+
+        if (isPrivate === "Y") {
+          password = prompt("Set a channel's password");
+        }
+        socket.emit("add channel", channel, isPrivate, password);
+      }
+      ////d/sa/dsa/dsa/d/sad/sad/asd/sa/das//sadsadasda/dsa/d/a
+      socket.on("add-channels", (channel, isPrivate, password) => {
+        var li = document.createElement("li");
+        li.setAttribute("id", channel);
+        if (!channel.includes("_")) {
+          if (isPrivate === "N") {
+            li.setAttribute("onclick", "changeRoom(this)");
+            li.setAttribute("style", "padding-left: 7px");
+            var textnode = document.createTextNode("#　 " + channel);
+          } else {
+            li.setAttribute("onclick", "changeToPrivateRoom(this)");
+            var textnode = document.createTextNode("\uD83D\uDD12　" + channel);
+          }
+          channel_password.set(channel, password);
+
+          li.appendChild(textnode);
+          channels.appendChild(li);
+        }
+      });
+
+      socket.on("start typing", function (typinguser, roomname) {
+        //タイピング中
+        if (nicks != typinguser && roomID.id === roomname) {
+          typingBox.innerHTML += typinguser + "さんが入力中　　";
+        }
+      });
+
+      socket.on("stop typing", function (typinguser, roomname) {
+        if (nicks != typinguser && roomID.id === roomname) {
+          typingBox.innerHTML = "";
+        }
+      });
+
+      var typing = 0;
+      document.getElementById("input").addEventListener("keyup", function (e) {
+        var fullList = "";
+        if (wasHashCliked === false && e.keyCode === 51 && e.key != 3) {
+          for (var i = 0; i < list.length; i++) {
+            fullList += '<li onclick="writeIt(this)"># '+ list[i].id + "</li>";
+            //fullList += "<li># " + list[i].id + "</li>"; //fullList += '<li onclick="writeIt(this)"># ' + list[i].id + "</li>";
+          }
+          userHints.innerHTML = fullList;
+          wasHashCliked = true;
+        } else {
+          if (wasMailClicked === false && e.keyCode === 192) {
+            for (var i = 1; i < usersList.length; i += 2) {
+              fullList +=
+                '<li onclick="writeIt(this)">@ '+
+                usersList[i].innerHTML +
+                "</li>"; //fullList += '<li onclick="writeIt(this)"># ' + list[i].id + "</li>";
+            }
+            userHints.innerHTML = fullList;
+            wasMailClicked = true;
+          } else if (e.keyCode === 16) {
+          } else {
+            userHints.innerHTML = "";
+          }
+        }
+        if (e.which != 13) {
+          //エンターキー以外が押されたらタイピングがincrementします
+          typing++;
+          if (typing == 1) {
+            //typingが1になったらタイピング中という情報が表示します
+            socket.emit("typing", { typing: 1 });
+          }
+          setTimeout(() => {
+            typing = 0;
+            socket.emit("typing", { typing: 0 });
+          }, 5000);
+        } else {
+          //エンターキーが押されたら「タイピング中」が表示しない
+          wasHashCliked = false;
+          wasMailClicked = false;
+          typing = 0;
+          socket.emit("typing", { typing: 0 });
+        }
+      });
+
+      function writeIt(channelName) {
+        channelName = channelName.innerHTML.substring(1,channelName.innerHTML.length);
+        console.log(channelName)
+        input.value += channelName;
+      }
+
+      socket.on("show_chat", (messages_2) => {
+        if (roomID.id === messages_2[2] || roomID === messages_2[2]) {
+          //messages.appendChild(li).appendChild(img);
+
+          messages.innerHTML +=
+            '<div class="toHover"><div class="reaction-box"></div><div></div><li><img style="max-height:40px;" src=' +
+            '"' +
+            messages_2[3] +
+            '"></li>' +
+            "<li><strong>" +
+            messages_2[0] +
+            '</strong>&nbsp&nbsp&nbsp<span style="font-size:12px">' +
+            messages_2[5] +
+            ":" +
+            messages_2[6] +
+            "</span><br>" +
+            messages_2[1] +
+            '</li><div class="asd"><img style="max-height:24px;" class="' +
+            messages_2[4] +
+            '" src="./happy.svg" onclick="sendReaction(this)"/><img style="max-height:24px;" class="' +
+            messages_2[4] +
+            '" src="./in-love.svg" onclick="sendReaction(this)"/><img style="max-height:24px;" class="' +
+            messages_2[4] +
+            '" src="./sad.svg" onclick="sendReaction(this)"/><img style="max-height:24px;" class="' +
+            messages_2[4] +
+            '" src="./sick.svg" onclick="sendReaction(this)"/></div><div></div></div>';
+        }
+      });
+
+      socket.on("show_date", (messages_2) => {
+        if (roomID.id === messages_2[2] || roomID === messages_2[2]) {
+          messages.innerHTML +=
+            '<div class="separator">' + messages_2[1] + "</div><div></div>";
+        }
+      });
+
+      socket.on("print_reaction", (classID, insideDiv) => {
+        insideDiv = insideDiv.replace(/#/g, '"');
+        insideDiv = insideDiv.substring(26, insideDiv.length - 6);
+        reactionBox[classID - 1].innerHTML = insideDiv;
+      });
+
+      socket.on("all in group", (allOnGroup) => {
+        for (var i = 0; i < allOnGroup.length; i++) {
+          if (allOnGroup[i][0] === roomID.id) {
+            var numbers = allOnGroup[i][1].split(",");
+
+            allOfUs.innerHTML = "All users in this channel: " + numbers.length;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
